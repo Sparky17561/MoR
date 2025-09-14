@@ -6,8 +6,9 @@ from tqdm import tqdm
 import math
 
 # ---- Training Data ----
-text = """Goldfish are a species of freshwater fish commonly kept as pets in aquariums and ponds. They belong to the carp family and are native to East Asia, where they were domesticated over a thousand years ago. Goldfish come in a wide variety of shapes, sizes, and colors, ranging from the classic orange to white, black, and calico patterns. They are known for their social behavior and can recognize their owners over time. Goldfish are omnivorous, meaning they eat both plant matter and small animals. Their diet usually consists of algae, small insects, larvae, and specially formulated fish food provided by humans. Proper care of goldfish requires a clean tank, good water filtration, and adequate space, since they can grow much larger than most people expect. Goldfish can live for more than ten years in healthy environments, with some reaching over twenty years of age. Because of their history, cultural significance, and hardy nature, goldfish are one of the most popular and recognizable aquarium fish in the world.
-"""
+with open("dataset.txt","r") as f:
+    text = f.read()
+
 
 # ---- Word-level Tokenizer (with special tokens) ----
 words = text.lower().split()
@@ -264,10 +265,17 @@ def generate(prompt,
     # decode only the generated tokens (not the prompt)
     return decode(generated)
 
-# ---- Try Asking a Question ----
-print("Prompt -> Response")
-print("-------------------")
-print("Q: Which family do goldfish belong to?")
-print("A:", generate("which family goldfish belong to", max_new_tokens=60,
-                   temperature=0.6, top_k=40, top_p=0.9,
-                   repetition_penalty=1.3, frequency_penalty=0.6, block_ngram_repeat=3))
+
+def main():
+    while True:
+        prompt = input("Enter a prompt (or 'exit' to quit): ")
+        if prompt.lower() in ['exit', 'quit']:
+            break
+        response = generate(prompt, max_new_tokens=60,
+                            temperature=0.6, top_k=40, top_p=0.9,
+                            repetition_penalty=1.3, frequency_penalty=0.6, block_ngram_repeat=3)
+        print("Response:", response)
+
+
+if __name__ == "__main__":
+    main()
